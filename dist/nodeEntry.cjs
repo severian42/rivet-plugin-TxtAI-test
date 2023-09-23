@@ -1,5 +1,5 @@
 // Import bundled Txtai.js library
-import * as txtai from 'src/txtai';
+import * as txtai from './txtai'';
 
 function TxtaiNode_default(rivet) {
   const nodeImpl = {
