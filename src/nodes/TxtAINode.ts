@@ -9,9 +9,11 @@ import type {
   Outputs,
   PortId,
   Rivet,
+  EditorDefinition,
 } from "@ironclad/rivet-core";
-import * as txtai from './txtai';
-export type TxtaiNode = ChartNode<'txtai', TxtaiNodeData>;
+// @ts-ignore
+import * as txtai from "../../txtai/index.js";
+export type TxtaiNode = ChartNode<"txtai", TxtaiNodeData>;
 
 export type TxtaiNodeData = {
   operation: string;
@@ -23,10 +25,10 @@ export default function (rivet: typeof Rivet) {
       return {
         id: rivet.newId<NodeId>(),
         data: {
-          operation: "",  // Initialize operation as empty
+          operation: "", // Initialize operation as empty
         },
         title: "Txtai Node",
-        type: 'txtai',
+        type: "txtai",
         visualData: {
           x: 0,
           y: 0,
@@ -38,14 +40,14 @@ export default function (rivet: typeof Rivet) {
     getInputDefinitions(_data: TxtaiNodeData): NodeInputDefinition[] {
       return [
         {
-          id: 'operation' as PortId,
-          dataType: 'string',
-          title: 'Operation',
+          id: "operation" as PortId,
+          dataType: "string",
+          title: "Operation",
         },
         {
-          id: 'inputData' as PortId,
-          dataType: 'string',
-          title: 'Input Data',
+          id: "inputData" as PortId,
+          dataType: "string",
+          title: "Input Data",
         },
       ];
     },
@@ -53,11 +55,28 @@ export default function (rivet: typeof Rivet) {
     getOutputDefinitions(): NodeOutputDefinition[] {
       return [
         {
-          id: 'outputData' as PortId,
-          dataType: 'string',
-          title: 'Output Data',
+          id: "outputData" as PortId,
+          dataType: "string",
+          title: "Output Data",
         },
       ];
+    },
+
+    getEditors(): EditorDefinition<TxtaiNode>[] {
+      return [];
+    },
+
+    getBody() {
+      return "";
+    },
+
+    getUIData() {
+      return {
+        group: "AI",
+        contextMenuTitle: "Txtai",
+        infoBoxBody: "Txtai Node",
+        infoBoxTitle: "Txtai Node",
+      };
     },
 
     async process(
@@ -65,20 +84,29 @@ export default function (rivet: typeof Rivet) {
       inputData: Inputs,
       _context: InternalProcessContext
     ): Promise<Outputs> {
-      const operation = rivet.getInputOrData(data, inputData, "operation", "string");
-      const input = rivet.getInputOrData(data, inputData, "inputData", "string");
-      
+      const operation = rivet.getInputOrData(
+        data,
+        inputData,
+        "operation",
+        "string"
+      );
+
+      const input = rivet.coerceType(
+        inputData["inputData" as PortId],
+        "string"
+      );
+
       let output: string = "";
 
       if (txtai[operation]) {
-        output = await txtai[operation](input);  // Use bundled Txtai.js functionality
+        output = await txtai[operation](input); // Use bundled Txtai.js functionality
       } else {
         output = "Invalid operation";
       }
 
       return {
-        ['outputData' as PortId]: {
-          type: 'string',
+        ["outputData" as PortId]: {
+          type: "string",
           value: output,
         },
       };
