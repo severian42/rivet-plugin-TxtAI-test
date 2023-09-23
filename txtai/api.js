@@ -1,7 +1,3 @@
-// Backwards compatibility
-import "core-js/features/promise";
-import "isomorphic-fetch";
-
 /**
  * Base class for interfacing with a remote txtai service via REST API calls. 
  */

@@ -26,7 +26,7 @@ const isomorphicBundleOptions: esbuild.BuildOptions = {
 };
 
 const nodeBundleOptions: esbuild.BuildOptions = {
-  entryPoints: ["src/nodeEntry.cjs"], // Updated to cjs since it's now a CommonJS file
+  entryPoints: ["src/nodeEntry.ts"],
   bundle: true,
   platform: "node",
   target: "es2020",
